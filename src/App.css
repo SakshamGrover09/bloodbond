@@ -7,10 +7,101 @@
   pointer-events: none;
 }
 
+.theme {
+  background-color: #c00202;
+}
+
+.border-imp {
+  
+  border-color: #c00202 !important;
+  border-width: 5px !important;
+  
+}
+.hs{
+  height: 90vh;
+}
+.sm{
+  margin-left: -132px;
+}
+.mg2{
+  margin-top: 50px;
+  margin-left: -5px;
+}
+.mg3{
+  margin-left: 13px;
+  margin-top: 45px;
+}
+
+.themelight{
+  color: azure;
+}
+.ppp{
+  color: azure;
+}
+.cc{
+  background-color: #ADDFFF; /* Green */
+
+}
+.ccc{
+  background-color: #FBA0E3; /* Green */
+
+
+}
+
+.ml{
+  margin-left: -30px;
+}
+.tc{
+  text-align: center;
+}
+.h{
+  height: 120px;
+}
+
+
+
+
+.pp {
+  font-family: "Lucida handwriting", cursive;
+  color:black;
+}
+
+.buttonn {
+  background-color: red; /* Green */
+   
+  color: white;
+  padding: 3px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 20px;
+  border-radius: 15px;
+}
+.mpp{
+  margin-top: 200px;
+}
+
+
+.navbar-custom {
+  background-color: #9433cc;
+}
+.bg-company-purple {
+  background-color:#4B0082 !important;
+}
+
+
+
+.mg{
+  margin-top: 80px;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
+}
+.mg2{
+  margin-top:20px;
 }
 
 .App-header {
