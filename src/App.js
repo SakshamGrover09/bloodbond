@@ -19,6 +19,9 @@ import AllRequests from "./components/Donor/AllRequests";
 import RequestState from "./context/requests/RequestState";
 import Myrequests from "./components/Seeker/Myrequests";
 import AddRequest from "./components/Seeker/AddRequest";
+import VerifyProfiles from "./components/Admin/VerifyProfiles";
+import News from "./components/News";
+import About from "./components/About";
 
 
 function App() {
@@ -146,6 +149,27 @@ function App() {
             element={ <AddRequest/>
         
             }></Route>
+
+            <Route
+             exact
+            path="/verifyprofiles"
+            element={ <VerifyProfiles/>
+        
+            }></Route>
+              <Route
+             exact
+            path="/news"
+            element={ <News/>
+        
+            }></Route>
+              <Route
+             exact
+            path="/about"
+            element={ <About/>
+        
+            }></Route>
+
+            
             
           
         </Routes>

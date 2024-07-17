@@ -4,7 +4,8 @@ import requestContext from "../../context/requests/requestContext";
 
 const RequestItem = (props) => {
   const context=useContext(requestContext);
-  const { request } = props;
+  const {deleteRequest}=context;
+  const { request} = props;
   
   return (
     
@@ -15,6 +16,10 @@ const RequestItem = (props) => {
           
           <h5 className="pp" >Health Issue : {request.healthissue}</h5>
           <h5 className="pp" >Date : {request.date}</h5>
+          <i className="fa-solid fa-trash mx-2 pp" onClick={()=>{
+            deleteRequest(request._id);
+            
+          }}></i>
           
         </div>
       </div>

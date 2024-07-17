@@ -3,17 +3,19 @@ import Sidenav from "./Sidenav";
 import RequestItem from "./RequestItem";
 import requestContext from "../../context/requests/requestContext";
 
+const VerifyProfiles = () => {
 
-const Myrequests = () => {
-
-  const context=useContext(requestContext);
+    const context=useContext(requestContext);
     
      
-   const{requests,getRequests}=context;
-   useEffect(() => {
-       getRequests();
-   }
-    , [])
+    const{drequests,getAllRequests}=context;
+    useEffect(() => {
+        getAllRequests();
+    }
+     , [])
+  
+    
+  
    
   return (
     <div className="container">
@@ -25,12 +27,12 @@ const Myrequests = () => {
         <div className="col-md-6 ">
           <div>
             <div className="column">
-              <h2 className="pp"><strong>My Requests</strong></h2>
+              <h2 className="pp"><strong>Active Requests</strong></h2>
               <div className="container mx-1 pp">
-                {requests.length === 0 && "No Requests To Display"}
+                {drequests.length === 0 && "No Requests To Display"}
               </div>
-              {requests.map((request) => {
-                return <RequestItem key={request._id} request={request} />; // show alert
+              {drequests.map((drequest) => {
+                return <RequestItem key={drequest._id} drequest={drequest} />; // show alert
               })}
             </div>
           </div>
@@ -38,6 +40,7 @@ const Myrequests = () => {
       </div>
     </div>
   );
-};
+  
+}
 
-export default Myrequests;
+export default VerifyProfiles

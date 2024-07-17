@@ -1,8 +1,42 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import Sidenav from './Sidenav'
+import { useState } from 'react'
+import requestContext from '../../context/requests/requestContext'
+import { useNavigate } from 'react-router'
 
 const SeekerProfile = () => {
+    const context=useContext(requestContext);
+    const {updateSeekerPassword,profile,getSeekerProfile}=context;
+
+    const [credentials,setCredentials]=useState({password:"",cpassword:""});
+    let navigate=useNavigate();
+    useEffect(() => {
+       getSeekerProfile();
+      
+    }, [])
+    
+
+  
+    
+
+    const onChange=(e)=>{
+
+       setCredentials({...credentials,[e.target.name]:e.target.value});
+    
+      }
+      const handleSubmit=async (e)=>{
+      if(credentials.cpassword===credentials.password)
+      {
+
+        updateSeekerPassword(credentials.password);
+        navigate("/seekerdashboard");
+    }
+        
+    }
+    
   return (
+
+    
       
    
 
@@ -15,48 +49,26 @@ const SeekerProfile = () => {
                 <div className="col-md-3 sm"><Sidenav/></div>
                     
               
-                <div className="col-md-10">
+                <div className="col-md-6">
+
+                <div className="card ccc mg">
+        <div className="card-body">
+        <h4 className="card-title pp"><strong>My Profile</strong></h4>
+          
+          <h5 className="pp" >Name : {profile.name} </h5>
+          <h5 className="pp" >Age : {profile.age}</h5>
+          <h5 className="pp" >Email : {profile.email}</h5>
+          <h5 className="pp" >Mobile : {profile.mobile}</h5>
+          <h5 className="pp" >Blood Group : {profile.bloodgroup}</h5>
+          
+          
+          
+        </div>
+      </div>
+                    </div>
                     
                
-                    <div className="row">
-                        <div className="col-md-6 ">
-                           
-                              
-                                
-
-                                <table className="table table-border-bordered  border border-imp mpp">
-                                    <tr>
-                                        <th colspan="2" className="text-center pp">My Profile</th>
-                                    </tr>
-                                    <tr>
-                                        <td className="pp">Name</td>
-                                        <td></td>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <td className="pp">Age</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td className="pp">Blood Group</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td className="pp">Email</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td className="pp">Phone Number</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td className="pp">Gender</td>
-                                        <td></td>
-                                    </tr>
-                                    
-                                </table>
-                        </div>
-                        <div className="col-md-6 border border-imp mg">
+                        <div className="col-md-4 border border-imp mg">
                             
                                
                           
@@ -64,25 +76,21 @@ const SeekerProfile = () => {
                            
 
                             <h5 className="my-4 text-center pp"><strong>Change Password</strong></h5>
-                            <form >
+                            <form onSubmit={handleSubmit} >
          
           
-    <div className="form-group my-3">
-      <label className="pp" htmlFor="email"> <i class="fa-solid fa-unlock"></i>   Old Password</label>
-      <input type="email" className="form-control my-2 pp"  id="email"  name="email" aria-describedby="emailHelp" placeholder="Enter old password...."/>
-     
+    
+    <div className="form-group my-2">
+      <label className="pp my-2" htmlFor="password"><i class="fa-solid fa-unlock"></i> New Password</label>
+      <input type="password" className="form-control my-2 pp" id="password" onChange={onChange} value={credentials.password}  name="password" placeholder="Enter new password...."/>
     </div>
     <div className="form-group my-2">
-      <label className="pp" htmlFor="password"><i class="fa-solid fa-unlock"></i> New Password</label>
-      <input type="password" className="form-control my-2 pp" id="password"   name="password" placeholder="Enter new password...."/>
-    </div>
-    <div className="form-group my-2">
-      <label className="pp" htmlFor="cpassword"><i class="fa-solid fa-unlock"></i> Confirm Password</label>
-      <input type="password" className="form-control my-2 pp" id="cpassword"   name="cpassword" placeholder="Enter new password...."/>
+      <label className="pp my-2" htmlFor="cpassword"><i class="fa-solid fa-unlock"></i> Confirm Password</label>
+      <input type="password" className="form-control my-2 pp" id="cpassword" onChange={onChange} value={credentials.cpassword}  name="cpassword" placeholder="Enter confirm password...."/>
     </div>
     
     
-    <button type="submit"   className="buttonn my-3 pp mx-6 " >Login    </button>
+    <button type="submit"   className="buttonn my-4 pp mx-6 " >Change Password     </button>
     
   </form>
                           
@@ -93,8 +101,8 @@ const SeekerProfile = () => {
                     </div>
                 </div>
             </div>
-        </div>
-        </div> 
+        
+      
         
     
   

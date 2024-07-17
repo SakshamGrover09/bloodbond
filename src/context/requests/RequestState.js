@@ -10,7 +10,7 @@ const RequestState=(props)=>{
     const requestdInitial=[];
       const [requests,setRequests]=useState(requestInitial);
       const [drequests,setDrequests]=useState(requestdInitial);
-
+      const [profile,setProfile]=useState({});
       const getRequests=async ()=>{
 
         const response = await fetch(`${host}/api/requests/fetchmyrequests`, {
@@ -20,7 +20,10 @@ const RequestState=(props)=>{
           'Content-Type':'application/json',
           'auth-token': localStorage.getItem("token")
           }
+          
         });
+        const tt= await response.json();
+        setRequests(tt);
     }
 
 
@@ -92,7 +95,7 @@ const RequestState=(props)=>{
 
 
 
-      const updateDonarPassword= async (password)=>{
+      const updateDonorPassword= async (password)=>{
 
         const response = await fetch(`${host}/api/auth/updatedonorpassword`, {
         method: "PUT",
@@ -119,11 +122,64 @@ const RequestState=(props)=>{
       });
 
       }
+
+      const getSeekerProfile=async ()=>{
+
+        const response = await fetch(`${host}/api/auth/getseeker`, {
+          method: "POST",
+          headers: 
+          {
+          'Content-Type':'application/json',
+          'auth-token': localStorage.getItem("token")
+          }
+          
+        });
+        const tt= await response.json();
+        setProfile(tt);
+        
+    console.log(profile);
+    }
+
+
+
+
+    const getDonorProfile=async ()=>{
+
+      const response = await fetch(`${host}/api/auth/getdonor`, {
+        method: "POST",
+        headers: 
+        {
+        'Content-Type':'application/json',
+        'auth-token': localStorage.getItem("token")
+        }
+        
+      });
+      const tt= await response.json();
+      setProfile(tt);
+  }
+
+
+  const getAdminProfile=async ()=>{
+
+    const response = await fetch(`${host}/api/auth/getadmin`, {
+      method: "POST",
+      headers: 
+      {
+      'Content-Type':'application/json',
+      'auth-token': localStorage.getItem("token")
+      }
+      
+    });
+    const tt= await response.json();
+    setProfile(tt);
+    
+    
+}
    
     
     
     return(
-        <requestContext.Provider value={{requests,drequests,getRequests,getAllRequests,addRequest,deleteRequest,updateAdminPassword,updateDonarPassword,updateSeekerPassword}} >
+        <requestContext.Provider value={{profile,requests,drequests,getRequests,getAllRequests,addRequest,deleteRequest,updateAdminPassword,updateDonorPassword,updateSeekerPassword,getSeekerProfile,getDonorProfile,getAdminProfile}} >
             { props.children}
 
         </requestContext.Provider>
