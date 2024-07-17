@@ -13,20 +13,38 @@ import SeekerProfile from "./components/Seeker/SeekerProfile";
 import DonorProfile from "./components/Donor/DonorProfile";
 import AdminProfile from "./components/Admin/AdminProfile";
 import AdminDashBoard from "./components/Admin/AdminDashBoard";
+import { useState } from "react";
+import Alert from "./components/Alert";
+import AllRequests from "./components/Donor/AllRequests";
+import RequestState from "./context/requests/RequestState";
+import Myrequests from "./components/Seeker/Myrequests";
+import AddRequest from "./components/Seeker/AddRequest";
 
 
 function App() {
+
+  const [alert,setAlert]=useState(null);
   document.body.style.backgroundImage="url('https://img.freepik.com/free-vector/neutral-soft-abstract-watercolor-background_53876-97742.jpg')"
 
-  
+  const showAlert=(message,type)=>{
+    setAlert({
+      msg:message,
+      type:type
+    })
+    setTimeout(() => {
+      setAlert(null);
+      
+    }, 2000);
+  }
 
   return (
    
     <div className="App">
     
-      
+        <RequestState>
       <BrowserRouter>
         <Navbar />
+        <Alert alert={alert}/>
        
        
         
@@ -110,6 +128,24 @@ function App() {
             element={ <AdminProfile/>
         
             }></Route>
+             <Route
+            exact
+            path="/donor/allrequests"
+            element={ <AllRequests/>
+        
+            }></Route>
+             <Route
+            exact
+            path="/seeker/myrequests"
+            element={ <Myrequests/>
+        
+            }></Route>
+             <Route
+             exact
+            path="/seeker/addrequests"
+            element={ <AddRequest/>
+        
+            }></Route>
             
           
         </Routes>
@@ -117,7 +153,7 @@ function App() {
         
       </BrowserRouter>
 
-      
+      </RequestState>
     </div>
   );
 }

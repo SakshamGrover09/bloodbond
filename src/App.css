@@ -21,6 +21,7 @@
   height: 90vh;
 }
 .sm{
+  margin-top: -45px;
   margin-left: -132px;
 }
 .mg2{
@@ -43,7 +44,7 @@
 
 }
 .ccc{
-  background-color: #FBA0E3; /* Green */
+  background-color:#ff6b6b /* Green */
 
 
 }

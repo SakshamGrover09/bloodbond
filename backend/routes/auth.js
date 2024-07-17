@@ -334,6 +334,96 @@ router.post('/adminlogin',[
 //       res.status(500).json({ error: 'Server error' });
 //     }  
 // });
+
+
+router.put("/updatedonorpassword", fetchuser, async (req, res) => {
+  try {
+    const { password} = req.body;
+
+    const newdonor = {};
+    
+    if (password) {
+      const salt=await bcrypt.genSalt(10);
+      const secPassword= await bcrypt.hash(password,salt);
+      newdonor.password = secPassword;
+    }
+    let donor = await Donor.findById(req.user.id);
+    if (!donor) {
+      return res.status(404).send("Note not Found");
+    }
+    
+    donor = await Donor.findByIdAndUpdate(
+      req.user.id,
+      { $set: newdonor },
+      { new: true }
+    );
+    res.json(donor);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+
+
+
+
+router.put("/updateseekerpassword", fetchuser, async (req, res) => {
+  try {
+    const { password} = req.body;
+
+    const newseeker = {};
+    
+    if (password) {
+      const salt=await bcrypt.genSalt(10);
+      const secPassword= await bcrypt.hash(password,salt);
+      newseeker.password = secPassword;
+    }
+    let seeker = await Seeker.findById(req.user.id);
+    if (!seeker) {
+      return res.status(404).send("Note not Found");
+    }
+    
+    seeker = await Seeker.findByIdAndUpdate(
+      req.user.id,
+      { $set: newseeker },
+      { new: true }
+    );
+    res.json(seeker);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+
+router.put("/updateadminpassword", fetchuser, async (req, res) => {
+  try {
+    const { password} = req.body;
+
+    const newadmin = {};
+    
+    if (password) {
+      const salt=await bcrypt.genSalt(10);
+      const secPassword= await bcrypt.hash(password,salt);
+      newadmin.password = secPassword;
+    }
+    let admin = await Admin.findById(req.user.id);
+    if (!admin) {
+      return res.status(404).send("Note not Found");
+    }
+    
+    admin = await Admin.findByIdAndUpdate(
+      req.user.id,
+      { $set: newadmin },
+      { new: true }
+    );
+    res.json(admin);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
   
 
 module.exports=router

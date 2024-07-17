@@ -7,46 +7,46 @@ const DonorSignup = (props) => {
 
     let navigate=useNavigate();
 
-    const [credentials,setCredentials]=useState({name:"",email:"",password:"",cpassword:""});
+    const [credentials,setCredentials]=useState({name:"",email:"",password:"",cpassword:"",gender:"Male",bloodgroup:"A+",mobile:"",age:""});
     
 
     const onChange=(e)=>{
 
-        // setCredentials({...credentials,[e.target.name]:e.target.value});
+        setCredentials({...credentials,[e.target.name]:e.target.value});
     
       }
     
 
     const handleSubmit=async (e)=>{
-        // e.preventDefault();
+         e.preventDefault();
+         console.log(credentials);
 
-        // if(credentials.password!==credentials.cpassword)
-        // {
-        //   props.showAlert("Passwords do not match","danger")
+         if(credentials.password!==credentials.cpassword)
+         {
+           props.showAlert("Passwords do not match","danger")
           
-        // }else{
+         }else{
 
-        // const response = await fetch(`${host}/api/auth/createuser`, {
-        //     method: "POST",
-        //     body: JSON.stringify({name:credentials.name,email:credentials.email ,password:credentials.password}),
-        //      headers: 
-        //     {
-        //     'Content-Type':'application/json'
-        //     }
-        //   });
-        //   const json=await response.json();
-        //   console.log(json);
-        //   if(json.success)
-        //   {
-        //       localStorage.setItem("token",json.authToken);
-        //       props.showAlert("Account created successfully","success")
-        //       navigate("/home");
+         const response = await fetch(`${host}/api/auth/createdonor`, {
+             method: "POST",
+             body: JSON.stringify({name:credentials.name,email:credentials.email ,password:credentials.password,age:credentials.age,mobile:credentials.mobile,bloodgroup:credentials.bloodgroup,gender:credentials.gender}),
+              headers: 
+             {
+             'Content-Type':'application/json'
+             }
+           });
+           const json=await response.json();
+           console.log(json);
+           if(json.success)
+          {
+              localStorage.setItem("token",json.authToken);
+              //  props.showAlert("Seeker Account created successfully","success")
+               navigate("/donordashboard");
 
-        //   }else{
-        //       props.showAlert("Invalid Credentials","danger")
-        //   }
-        // }
-        navigate("/donordashboard");
+           }else{
+              //  props.showAlert("Invalid Credentials","danger")
+          }
+         }
     }
 
 
@@ -74,11 +74,11 @@ const DonorSignup = (props) => {
 </div>
 <div className="form-group">
   <label  className="pp" htmlFor="age"><i className="fa-solid fa-users"></i>  Age</label>
-  <input type="age" className="form-control my-2 pp" id="age" onChange={onChange} value={credentials.cpassword} required minLength={5} name="age" placeholder="Enter Age..."/>
+  <input type="number" className="form-control my-2 pp" id="age" onChange={onChange} value={credentials.age} required minLength={5} name="age" placeholder="Enter Age..."/>
 </div>
 <div className="from-group">
     <label className="pp" htmlFor="gender"><i className="fa-solid fa-person-half-dress"></i>  Select Gender </label>
-           <select name="gender" value="" className="form-control">
+           <select onChange={onChange} name="gender" value={credentials.gender} className="form-control">
               
                <option className="pp" value="Male">Male </option>
                <option className="pp" value="Female">Female </option>
@@ -87,7 +87,7 @@ const DonorSignup = (props) => {
 </div>
 <div className="from-group">
     <label className="pp" htmlFor="bloodgroup"><i className="fa-solid fa-droplet"></i>  Select Blood Group </label>
-           <select name="bloodgroup" value="" className="form-control">
+           <select onChange={onChange} name="bloodgroup" value={credentials.bloodgroup} className="form-control">
               
                <option className="pp" value="A+">A+ </option>
                <option className="pp" value="A-">A~ </option>
@@ -101,8 +101,8 @@ const DonorSignup = (props) => {
 </div>
 
 <div className="form-group">
-  <label  className="pp" htmlFor="phone"><i className="fa-solid fa-mobile"></i>   Mobile Number</label>
-  <input type="number" className="form-control my-2 pp" id="phone" onChange={onChange} value={credentials.password} required minLength={5} name="phone" placeholder=""/>
+  <label  className="pp" htmlFor="mobile"><i className="fa-solid fa-mobile"></i>   Mobile Number</label>
+  <input type="text" className="form-control my-2 pp" id="mobile" onChange={onChange} value={credentials.mobile} required minLength={5} name="mobile" placeholder=""/>
 </div>
 <div className="form-group">
   <label  className="pp" htmlFor="password"><i className="fa-solid fa-unlock"></i>  Password</label>

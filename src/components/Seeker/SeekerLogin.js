@@ -11,14 +11,14 @@ const SeekerLogin = (props) => {
 
     const onChange=(e)=>{
 
-        // setCredentials({...credentials,[e.target.name]:e.target.value});
+        setCredentials({...credentials,[e.target.name]:e.target.value});
     
       }
     
 
       const handleSubmit=async (e)=>{
         e.preventDefault();
-        const response = await fetch(`${host}/api/auth/login`, {
+        const response = await fetch(`${host}/api/auth/seekerlogin`, {
             method: "POST",
             body: JSON.stringify({email:credentials.email ,password:credentials.password}),
             headers: 
@@ -31,15 +31,11 @@ const SeekerLogin = (props) => {
           if(json.success)
           {
                localStorage.setItem("token",json.authToken);
-               let a=localStorage.getItem("token");
-               console.log(a);
-              
-              
-              props.showAlert("Logged in successfully","success")
-              navigate("/home");
+              // props.showAlert("Logged in successfully","success")
+              navigate("/seekerdashboard");
 
            }else{
-             props.showAlert("Invalid Credentials","danger")
+            //  props.showAlert("Invalid Credentials","danger")
            }
     
     }

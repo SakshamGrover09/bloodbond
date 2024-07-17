@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Home = () => {
   return (
     <>
-      <div className="container mg">
+      <div className="container ">
           <div className="row ">
              <div className="col-md-4 border border-imp ">
                  <img className="mg2" width="340" height="320" src="https://st3.depositphotos.com/1001599/19044/v/450/depositphotos_190446480-stock-illustration-doctor-visiting-patient-lying-in.jpg" alt="" />
