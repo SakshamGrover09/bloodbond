@@ -1,22 +1,16 @@
 import React, { useContext, useEffect } from "react";
 import Sidenav from "./Sidenav";
-import RequestItem from "./RequestItem";
+import RequestItem from "./DonorRequestItem";
 import requestContext from "../../context/requests/requestContext";
 
-const VerifyProfiles = () => {
+const PendingDonorRequests = () => {
+  const context = useContext(requestContext);
 
-    const context=useContext(requestContext);
-    
-     
-    const{drequests,getAllRequests}=context;
-    useEffect(() => {
-        getAllRequests();
-    }
-     , [])
-  
-    
-  
-   
+  const { donorRequests, getDonorRequests } = context;
+  useEffect(() => {
+    getDonorRequests();
+  }, []);
+
   return (
     <div className="container">
       <div className="row">
@@ -27,12 +21,14 @@ const VerifyProfiles = () => {
         <div className="col-md-6 ">
           <div>
             <div className="column">
-              <h2 className="pp"><strong>Active Requests</strong></h2>
+              <h2 className="pp">
+                <strong>Pending Requests</strong>
+              </h2>
               <div className="container mx-1 pp">
-                {drequests.length === 0 && "No Requests To Display"}
+                {donorRequests.length === 0 && "No Requests To Display"}
               </div>
-              {drequests.map((drequest) => {
-                return <RequestItem key={drequest._id} drequest={drequest} />; // show alert
+              {donorRequests.map((drequest) => {
+                return <RequestItem key={drequest._id} drequest={drequest} />; 
               })}
             </div>
           </div>
@@ -40,7 +36,6 @@ const VerifyProfiles = () => {
       </div>
     </div>
   );
-  
-}
+};
 
-export default VerifyProfiles
+export default PendingDonorRequests;

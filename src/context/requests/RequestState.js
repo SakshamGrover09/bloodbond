@@ -1,189 +1,219 @@
 import React, { useState } from "react";
 import requestContext from "./requestContext";
 
+const RequestState = (props) => {
+  const host = "http://localhost:5000";
 
-const RequestState=(props)=>{
+  const donorRequestsInitial = [];
+  const seekerRequestsInitial = [];
+  const [donorRequests, setDonorRequests] = useState(donorRequestsInitial);
+  const [seekerRequests, setSeekerRequests] = useState(seekerRequestsInitial);
+  const [profile, setProfile] = useState({});
 
-  const host="http://localhost:5000";
+  const getDonorRequests = async () => {
+    const response = await fetch(`${host}/api/requests/donorrequest`, {
+      method: "GET",
+    });
+    const json = await response.json();
+    setDonorRequests(json);
+  };
 
-    const requestInitial=[];
-    const requestdInitial=[];
-      const [requests,setRequests]=useState(requestInitial);
-      const [drequests,setDrequests]=useState(requestdInitial);
-      const [profile,setProfile]=useState({});
-      const getRequests=async ()=>{
+  const getSeekerRequests = async () => {
+    const response = await fetch(`${host}/api/requests/seekerrequest`, {
+      method: "GET",
+    });
+    const json = await response.json();
+    setSeekerRequests(json);
+  };
 
-        const response = await fetch(`${host}/api/requests/fetchmyrequests`, {
-          method: "GET",
-          headers: 
-          {
-          'Content-Type':'application/json',
-          'auth-token': localStorage.getItem("token")
-          }
-          
-        });
-        const tt= await response.json();
-        setRequests(tt);
+  const donateBlood = async () => {
+    const response = await fetch(`${host}/api/requests/donateblood`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem("token"),
+      },
+    });
+
+    const json = await response.json();
+    setDonorRequests(donorRequests.concat(json));
+  };
+
+  const requestBlood = async (healthissue) => {
+    const response = await fetch(`${host}/api/requests/requestblood`, {
+      method: "POST",
+      body: JSON.stringify({ healthissue }),
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem("token"),
+      },
+    });
+
+    const json = await response.json();
+    if (json.error != "NOT_AVAILABLE") {
+      setSeekerRequests(seekerRequests.concat(json));
+      return 1;
+    } else {
+      return 0;
     }
+  };
 
+  const approveSeekerRequest = async (id) => {
+    const newrequests = seekerRequests.filter((request) => {
+      return request._id !== id;
+    });
 
-        const getAllRequests=async ()=>{
+    setSeekerRequests(newrequests);
 
-            const response = await fetch(`${host}/api/requests/fetchallrequests`, {
-              method: "GET",
-              headers: 
-              {
-              'Content-Type':'application/json',
-              'auth-token': localStorage.getItem("token")
-              }
-            });
-
-        const json=await response.json();
-        setDrequests(json);
+    const response = await fetch(
+      `${host}/api/requests/approveseekerrequest/${id}`,
+      {
+        method: "DELETE",
       }
+    );
+  };
 
+  const rejectSeekerRequest = async (id) => {
+    const newrequests = seekerRequests.filter((request) => {
+      return request._id !== id;
+    });
 
-      const addRequest=async (healthissue)=>{
+    setSeekerRequests(newrequests);
 
-        const response = await fetch(`${host}/api/requests/addrequest`, {
-          method: "POST",
-          body: JSON.stringify({healthissue}),
-          headers: 
-          {
-          'Content-Type':'application/json',
-          'auth-token':  localStorage.getItem("token")
-          }
-        });
-
-        const json = await response.json();
-        setRequests(requests.concat(json));
-        
+    const response = await fetch(
+      `${host}/api/requests/rejectseekerrequest/${id}`,
+      {
+        method: "DELETE",
       }
+    );
+  };
 
+  const approveDonateRequest = async (id) => {
+    const newrequests = donorRequests.filter((request) => {
+      return request._id !== id;
+    });
 
-      const deleteRequest= async (id)=>{
+    setDonorRequests(newrequests);
 
-        const newrequests=requests.filter((request)=>{
-
-         return request._id!==id;
-        })
-
-        setRequests(newrequests);
-        const response = await fetch(`${host}/api/requests/deleterequest/${id}`, {
-          method: "DELETE",
-          headers: 
-          {
-          'Content-Type':'application/json',
-          'auth-token': localStorage.getItem("token")
-          }
-        });
+    const response = await fetch(
+      `${host}/api/requests/approvedonaterequest/${id}`,
+      {
+        method: "DELETE",
       }
+    );
+  };
 
+  const rejectDonateRequest = async (id) => {
+    const newrequests = donorRequests.filter((request) => {
+      return request._id !== id;
+    });
 
-      const updateAdminPassword= async (password)=>{
+    setDonorRequests(newrequests);
 
-        const response = await fetch(`${host}/api/auth/updateadminpassword`, {
-        method: "PUT",
-        body: JSON.stringify({password}),
-        headers: 
-        {
-        'Content-Type':'application/json',
-        'auth-token':  localStorage.getItem("token")
-        }
-      });
+    const response = await fetch(
+      `${host}/api/requests/rejectdonaterequest/${id}`,
+      {
+        method: "DELETE",
       }
+    );
+  };
 
+  const updateAdminPassword = async (password) => {
+    const response = await fetch(`${host}/api/auth/updateadminpassword`, {
+      method: "PUT",
+      body: JSON.stringify({ password }),
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem("token"),
+      },
+    });
+  };
 
+  const updateDonorPassword = async (password) => {
+    const response = await fetch(`${host}/api/auth/updatedonorpassword`, {
+      method: "PUT",
+      body: JSON.stringify({ password }),
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem("token"),
+      },
+    });
+  };
 
-      const updateDonorPassword= async (password)=>{
+  const updateSeekerPassword = async (password) => {
+    const response = await fetch(`${host}/api/auth/updateseekerpassword`, {
+      method: "PUT",
+      body: JSON.stringify({ password }),
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem("token"),
+      },
+    });
+  };
 
-        const response = await fetch(`${host}/api/auth/updatedonorpassword`, {
-        method: "PUT",
-        body: JSON.stringify({password}),
-        headers: 
-        {
-        'Content-Type':'application/json',
-        'auth-token':  localStorage.getItem("token")
-        }
-      });
-      }
+  const getSeekerProfile = async () => {
+    const response = await fetch(`${host}/api/auth/getseeker`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem("token"),
+      },
+    });
+    const tt = await response.json();
+    setProfile(tt);
 
-
-      const updateSeekerPassword= async (password)=>{
-
-        const response = await fetch(`${host}/api/auth/updateseekerpassword`, {
-        method: "PUT",
-        body: JSON.stringify({password}),
-        headers: 
-        {
-        'Content-Type':'application/json',
-        'auth-token':  localStorage.getItem("token")
-        }
-      });
-
-      }
-
-      const getSeekerProfile=async ()=>{
-
-        const response = await fetch(`${host}/api/auth/getseeker`, {
-          method: "POST",
-          headers: 
-          {
-          'Content-Type':'application/json',
-          'auth-token': localStorage.getItem("token")
-          }
-          
-        });
-        const tt= await response.json();
-        setProfile(tt);
-        
     console.log(profile);
-    }
+  };
 
+  const getDonorProfile = async () => {
+    const response = await fetch(`${host}/api/auth/getdonor`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem("token"),
+      },
+    });
+    const tt = await response.json();
+    setProfile(tt);
+  };
 
-
-
-    const getDonorProfile=async ()=>{
-
-      const response = await fetch(`${host}/api/auth/getdonor`, {
-        method: "POST",
-        headers: 
-        {
-        'Content-Type':'application/json',
-        'auth-token': localStorage.getItem("token")
-        }
-        
-      });
-      const tt= await response.json();
-      setProfile(tt);
-  }
-
-
-  const getAdminProfile=async ()=>{
-
+  const getAdminProfile = async () => {
     const response = await fetch(`${host}/api/auth/getadmin`, {
       method: "POST",
-      headers: 
-      {
-      'Content-Type':'application/json',
-      'auth-token': localStorage.getItem("token")
-      }
-      
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem("token"),
+      },
     });
-    const tt= await response.json();
+    const tt = await response.json();
     setProfile(tt);
-    
-    
-}
-   
-    
-    
-    return(
-        <requestContext.Provider value={{profile,requests,drequests,getRequests,getAllRequests,addRequest,deleteRequest,updateAdminPassword,updateDonorPassword,updateSeekerPassword,getSeekerProfile,getDonorProfile,getAdminProfile}} >
-            { props.children}
+  };
 
-        </requestContext.Provider>
-    )
-}
+  return (
+    <requestContext.Provider
+      value={{
+        profile,
+        donorRequests,
+        seekerRequests,
+        donateBlood,
+        requestBlood,
+        getDonorRequests,
+        getSeekerRequests,
+        approveDonateRequest,
+        approveSeekerRequest,
+        rejectDonateRequest,
+        rejectSeekerRequest,
+        updateAdminPassword,
+        updateDonorPassword,
+        updateSeekerPassword,
+        getSeekerProfile,
+        getDonorProfile,
+        getAdminProfile,
+      }}
+    >
+      {props.children}
+    </requestContext.Provider>
+  );
+};
 
 export default RequestState;

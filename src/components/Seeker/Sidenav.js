@@ -7,8 +7,7 @@ const Sidenav = () => {
         <div className="list-group theme hs" >
                     <Link to="/seekerdashboard" className="list-group-item list-group-item-action theme text-center text-white">My Dashboard</Link>
                     <Link to="/seekerprofile" className="list-group-item list-group-item-action theme text-center text-white">My Profile</Link>
-                    <Link to="/seeker/addrequests" className="list-group-item list-group-item-action theme text-center text-white">Request Blood</Link>
-                    <Link to="/seeker/myrequests" className="list-group-item list-group-item-action theme text-center text-white">My Requests</Link>
+                    <Link to="/seeker/requestblood" className="list-group-item list-group-item-action theme text-center text-white">Request Blood</Link>
    
                     <img width="270"  height="350"    className="mg3" src="https://cse.noticebard.com/wp-content/uploads/sites/23/2023/05/NB-Featured-Image-2-1-300x300.jpg" alt="" />
                   </div>

@@ -1,14 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const fetchuser = require("../middleware/fetchuser");
-const Request = require("../models/Request");
 const Seeker = require("../models/Seeker");
 const Donor = require("../models/Donor");
 const { body, validationResult } = require("express-validator");
+const DonorPendingRequest = require("../models/DonorPendingRequest");
+const SeekerPendingRequest = require("../models/SeekerPendingRequest");
+const BloodStock = require("../models/BloodStock");
 
-router.get("/fetchmyrequests", fetchuser, async (req, res) => {
+router.get("/donorrequest", async (req, res) => {
   try {
-    const requests = await Request.find({ user: req.user.id });
+    const requests = await DonorPendingRequest.find();
     res.json(requests);
   } catch (error) {
     console.error(error);
@@ -16,11 +18,9 @@ router.get("/fetchmyrequests", fetchuser, async (req, res) => {
   }
 });
 
-router.get("/fetchallrequests", fetchuser, async (req, res) => {
+router.get("/seekerrequest", async (req, res) => {
   try {
-
-    const data = await Donor.findById(req.user.id)
-    const requests = await Request.find({ bloodgroup: data.bloodgroup});
+    const requests = await SeekerPendingRequest.find();
     res.json(requests);
   } catch (error) {
     console.error(error);
@@ -29,7 +29,7 @@ router.get("/fetchallrequests", fetchuser, async (req, res) => {
 });
 
 router.post(
-  "/addrequest",
+  "/requestblood",
   fetchuser,
   [
     body("healthissue", "Enter valid input").exists()
@@ -42,20 +42,28 @@ router.post(
       if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
       }
-      const data = await Seeker.findById(req.user.id);
       
+      const data = await Seeker.findById(req.user.id);
+      const bloodStock = await BloodStock.findOne({bloodgroup: data.bloodgroup});
+      if(!bloodStock)
+      {
+        return res.status(200).json({error: "NOT_AVAILABLE"});
+      }else if (bloodStock.quantity ===0){
+        return res.status(200).json({error: "NOT_AVAILABLE"});
+      }
+      const updatequantity = await BloodStock.updateOne(
+        { bloodgroup: data.bloodgroup },
+        { $inc: { quantity: -1 } }
+      );
 
-      const request = new Request({
+      const seekerRequest = new SeekerPendingRequest({
         healthissue,
         name:data.name,
         email:data.email,
         user: req.user.id,
-        mobile:data.mobile,
         bloodgroup:data.bloodgroup,
-        gender:data.gender,
-        age:data.age
       });
-      const savedreq = await request.save();
+      const savedreq = await seekerRequest.save();
       res.json(savedreq);
     } catch (error) {
       console.error(error);
@@ -64,54 +72,102 @@ router.post(
   }
 );
 
-// router.put("/updatenote/:id", fetchuser, async (req, res) => {
-//   try {
-//     const { title, description, tag } = req.body;
 
-//     const newNote = {};
-//     if (title) {
-//       newNote.title = title;
-//     }
-//     if (description) {
-//       newNote.description = description;
-//     }
-//     if (tag) {
-//       newNote.tag = tag;
-//     }
-//     let note = await Note.findById(req.params.id);
-//     if (!note) {
-//       return res.status(404).send("Note not Found");
-//     }
-//     if (note.user.toString() != req.user.id) {
-//       return res.status(401).send("Not Allowed");
-//     }
-//     note = await Note.findByIdAndUpdate(
-//       req.params.id,
-//       { $set: newNote },
-//       { new: true }
-//     );
-//     res.json(note);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: "Server error" });
-//   }
-// });
-
-router.delete("/deleterequest/:id", fetchuser, async (req, res) => {
+router.delete("/rejectdonaterequest/:id", async (req, res) => {
   try {
-    let request = await Request.findById(req.params.id);
+    let request = await DonorPendingRequest.findById(req.params.id);
     if (!request) {
-      return res.status(404).send("Note not Found");
+      return res.status(404).send("Request not Found");
     }
-    if (request.user.toString() != req.user.id) {
-      return res.status(401).send("Not Allowed");
-    }
-    request = await Request.findByIdAndDelete(req.params.id);
+    request = await DonorPendingRequest.findByIdAndDelete(req.params.id);
     res.json({ Success: "Deleted Succesfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });
   }
 });
+
+router.delete("/approvedonaterequest/:id", async (req, res) => {
+  try {
+    let request = await DonorPendingRequest.findById(req.params.id);
+    if (!request) {
+      return res.status(404).send("Request not Found");
+    }
+    const availRequest = await BloodStock.findOne({bloodgroup: request.bloodgroup});
+    if(!availRequest)
+    { 
+      const req = new BloodStock({
+        bloodgroup:request.bloodgroup,
+        quantity: 1,
+      });
+      const saveReq = await req.save();
+    }else
+    {
+    const updatequantity = await BloodStock.updateOne(
+      { bloodgroup: request.bloodgroup },
+      { $inc: { quantity: 1 } }
+    );
+    }
+    request = await DonorPendingRequest.findByIdAndDelete(req.params.id);
+    res.json({ Success: "Deleted Succesfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.delete("/approveseekerrequest/:id", async (req, res) => {
+  try {
+    let request = await SeekerPendingRequest.findById(req.params.id);
+    if (!request) {
+      return res.status(404).send("Request not Found");
+    }
+    request = await SeekerPendingRequest.findByIdAndDelete(req.params.id);
+    res.json({ Success: "Deleted Succesfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.delete("/rejectseekerrequest/:id", async (req, res) => {
+  try {
+    let request = await SeekerPendingRequest.findById(req.params.id);
+    if (!request) {
+      return res.status(404).send("Request not Found");
+    }
+    const updatequantity = await BloodStock.updateOne(
+      { bloodgroup: request.bloodgroup },
+      { $inc: { quantity: 1 } }
+    );
+    request = await SeekerPendingRequest.findByIdAndDelete(req.params.id);
+    res.json({ Success: "Deleted Succesfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.post(
+  "/donateblood",
+  fetchuser,
+  async (req, res) => {
+    try {
+      const data = await Donor.findById(req.user.id);
+    
+      const donorRequest = new DonorPendingRequest({
+        name:data.name,
+        email:data.email,
+        user: req.user.id,
+        bloodgroup:data.bloodgroup,
+      });
+      const savedReq = await donorRequest.save();
+      res.json(savedReq);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Server error" });
+    }
+  }
+);
 
 module.exports = router;

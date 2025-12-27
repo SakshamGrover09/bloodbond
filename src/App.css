@@ -58,6 +58,9 @@
 .h{
   height: 120px;
 }
+.gap{
+  gap: 15px
+}
 
 
 
@@ -77,6 +80,7 @@
   display: inline-block;
   font-size: 20px;
   border-radius: 15px;
+  margin-right: 10px;
 }
 .mpp{
   margin-top: 200px;
